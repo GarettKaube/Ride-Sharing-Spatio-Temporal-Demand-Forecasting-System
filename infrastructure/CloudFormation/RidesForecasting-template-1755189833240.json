@@ -1,0 +1,468 @@
+{
+    "Metadata": {
+        "AWSToolsMetrics": {
+            "IaC_Generator": "arn:aws:cloudformation:us-west-1:390402566290:generatedTemplate/e5034cf1-1eac-4d25-bbdb-1efe5132f56b"
+        }
+    },
+    "Parameters": {
+        "LambdaFunctionRideStreamProcessorCodeZipFileSkcnX": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "(Node.js and Python) The source code of your Lambda function. If you include your function source inline with this parameter, CFN places it in a file named ``index`` and zips it to create a [deployment package](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html). This zip file cannot exceed 4MB. For the ``Handler`` property, the first part of the handler identifier must be ``index``. For example, ``index.handler``.\n  When you specify source code inline for a Node.js function, the ``index`` file that CFN creates uses the extension ``.js``. This means that LAM treats the file as a CommonJS module. ES modules aren't supported for inline functions.\n   For JSON, you must escape quotes and special characters such as newline (``\\n``) with a backslash.\n If you specify a function that interacts with an AWS CloudFormation custom resource, you don't have to write your own functions to send responses to the custom resource that invoked the function. AWS CloudFormation provides a response module ([cfn-response](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-lambda-function-code-cfnresponsemodule.html)) that simplifies sending responses. See [Using Lambda with CloudFormation](https://docs.aws.amazon.com/lambda/latest/dg/services-cloudformation.html) for details."
+        },
+        "LambdaFunctionGetRidesForecastCodeImageUriCrYvl": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "URI of a [container image](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html) in the Amazon ECR registry."
+        },
+        "LambdaFunctionGetRidesForecastCodeZipFile7h0id": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "(Node.js and Python) The source code of your Lambda function. If you include your function source inline with this parameter, CFN places it in a file named ``index`` and zips it to create a [deployment package](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html). This zip file cannot exceed 4MB. For the ``Handler`` property, the first part of the handler identifier must be ``index``. For example, ``index.handler``.\n  When you specify source code inline for a Node.js function, the ``index`` file that CFN creates uses the extension ``.js``. This means that LAM treats the file as a CommonJS module. ES modules aren't supported for inline functions.\n   For JSON, you must escape quotes and special characters such as newline (``\\n``) with a backslash.\n If you specify a function that interacts with an AWS CloudFormation custom resource, you don't have to write your own functions to send responses to the custom resource that invoked the function. AWS CloudFormation provides a response module ([cfn-response](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-lambda-function-code-cfnresponsemodule.html)) that simplifies sending responses. See [Using Lambda with CloudFormation](https://docs.aws.amazon.com/lambda/latest/dg/services-cloudformation.html) for details."
+        },
+        "LambdaFunctionRideStreamProcessorCodeS3BucketZDbA7": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "An Amazon S3 bucket in the same AWS-Region as your function. The bucket can be in a different AWS-account."
+        },
+        "LambdaFunctionGetRidesForecastCodeS3KeymQt7E": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "The Amazon S3 key of the deployment package."
+        },
+        "LambdaFunctionRideStreamProcessorCodeImageUriaWN4q": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "URI of a [container image](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html) in the Amazon ECR registry."
+        },
+        "LambdaFunctionRideStreamProcessorCodeS3ObjectVersionMxfbc": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "For versioned objects, the version of the deployment package object to use."
+        },
+        "LambdaFunctionGetRidesForecastCodeS3ObjectVersion7R7Fy": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "For versioned objects, the version of the deployment package object to use."
+        },
+        "LambdaFunctionRideStreamProcessorCodeS3Key8TDQb": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "The Amazon S3 key of the deployment package."
+        },
+        "LambdaFunctionGetRidesForecastCodeS3BucketYro5h": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "An Amazon S3 bucket in the same AWS-Region as your function. The bucket can be in a different AWS-account."
+        }
+    },
+    "Resources": {
+        "S3BucketMybucket1654": {
+            "UpdateReplacePolicy": "Retain",
+            "Type": "AWS::S3::Bucket",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "PublicAccessBlockConfiguration": {
+                    "RestrictPublicBuckets": true,
+                    "IgnorePublicAcls": true,
+                    "BlockPublicPolicy": true,
+                    "BlockPublicAcls": true
+                },
+                "BucketName": "mybucket1654",
+                "OwnershipControls": {
+                    "Rules": [
+                        {
+                            "ObjectOwnership": "BucketOwnerEnforced"
+                        }
+                    ]
+                },
+                "BucketEncryption": {
+                    "ServerSideEncryptionConfiguration": [
+                        {
+                            "BucketKeyEnabled": true,
+                            "ServerSideEncryptionByDefault": {
+                                "SSEAlgorithm": "AES256"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "IAMRoleGetRidesForecastroles9putrir": {
+            "UpdateReplacePolicy": "Retain",
+            "Type": "AWS::IAM::Role",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "Path": "/service-role/",
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+                    {
+                        "Ref": "IAMManagedPolicyPolicyserviceroleAWSLambdaBasicExecutionRoled6993dd9f6bc4cb68a1dde6335ab23e0"
+                    }
+                ],
+                "MaxSessionDuration": 3600,
+                "RoleName": "getRidesForecast-role-s9putrir",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Action": "sts:AssumeRole",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "IAMUserKinesisStream": {
+            "UpdateReplacePolicy": "Retain",
+            "Type": "AWS::IAM::User",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "Path": "/",
+                "ManagedPolicyArns": [
+                    {
+                        "Ref": "IAMManagedPolicyPolicyAWSKinesisTest"
+                    }
+                ],
+                "UserName": "KinesisStream",
+                "Tags": [
+                    {
+                        "Value": "test",
+                        "Key": "AKIAVVZOONCJHNKIR4VT"
+                    }
+                ]
+            }
+        },
+        "IAMManagedPolicyPolicyAWSKinesisTest": {
+            "UpdateReplacePolicy": "Retain",
+            "Type": "AWS::IAM::ManagedPolicy",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "ManagedPolicyName": "AWSKinesisTest",
+                "Path": "/",
+                "Description": "",
+                "Groups": [],
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Resource": "*",
+                            "Action": "cloudwatch:PutMetricData",
+                            "Effect": "Allow",
+                            "Sid": "VisualEditor0"
+                        },
+                        {
+                            "Resource": [
+                                "arn:aws:kinesis:us-west-1:390402566290:stream/mydatastream",
+                                "arn:aws:dynamodb:us-west-1:390402566290:table/mytable",
+                                "arn:aws:dynamodb:us-west-1:390402566290:table/RideKinesisStreamBuffer",
+                                "arn:aws:dynamodb:us-west-1:390402566290:table/RideKinesisProcessor"
+                            ],
+                            "Action": [
+                                "dynamodb:CreateTable",
+                                "kinesis:PutRecord",
+                                "dynamodb:PutItem",
+                                "dynamodb:DescribeTable",
+                                "dynamodb:DeleteItem",
+                                "kinesis:PutRecords",
+                                "kinesis:GetShardIterator",
+                                "dynamodb:GetItem",
+                                "kinesis:GetRecords",
+                                "dynamodb:Scan",
+                                "kinesis:DescribeStream",
+                                "dynamodb:UpdateItem"
+                            ],
+                            "Effect": "Allow",
+                            "Sid": "VisualEditor1"
+                        }
+                    ]
+                },
+                "Roles": [
+                    "RideStreamProcessor-role-wc2c29w8"
+                ],
+                "Users": [
+                    "KinesisStream",
+                    "bobjames"
+                ]
+            }
+        },
+        "IAMManagedPolicyPolicyserviceroleAWSLambdaBasicExecutionRoleee329dd6c4a3418c8f2f1fbff784e5f2": {
+            "UpdateReplacePolicy": "Retain",
+            "Type": "AWS::IAM::ManagedPolicy",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "ManagedPolicyName": "AWSLambdaBasicExecutionRole-ee329dd6-c4a3-418c-8f2f-1fbff784e5f2",
+                "Path": "/service-role/",
+                "Description": "",
+                "Groups": [],
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Resource": "arn:aws:logs:us-west-1:390402566290:*",
+                            "Action": "logs:CreateLogGroup",
+                            "Effect": "Allow"
+                        },
+                        {
+                            "Resource": [
+                                "arn:aws:logs:us-west-1:390402566290:log-group:/aws/lambda/RideStreamProcessor:*"
+                            ],
+                            "Action": [
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents"
+                            ],
+                            "Effect": "Allow"
+                        }
+                    ]
+                },
+                "Roles": [
+                    "RideStreamProcessor-role-wc2c29w8"
+                ],
+                "Users": []
+            }
+        },
+        "KinesisStreamMydatastream": {
+            "UpdateReplacePolicy": "Retain",
+            "Type": "AWS::Kinesis::Stream",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "StreamModeDetails": {
+                    "StreamMode": "PROVISIONED"
+                },
+                "RetentionPeriodHours": 24,
+                "DesiredShardLevelMetrics": [],
+                "Name": "mydatastream",
+                "ShardCount": 1
+            }
+        },
+        "LambdaFunctionRideStreamProcessor": {
+            "UpdateReplacePolicy": "Retain",
+            "Type": "AWS::Lambda::Function",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "MemorySize": 128,
+                "Description": "",
+                "TracingConfig": {
+                    "Mode": "PassThrough"
+                },
+                "Timeout": 60,
+                "RuntimeManagementConfig": {
+                    "UpdateRuntimeOn": "Auto"
+                },
+                "Handler": "lambda_function.lambda_handler",
+                "Code": {
+                    "S3ObjectVersion": {
+                        "Ref": "LambdaFunctionRideStreamProcessorCodeS3ObjectVersionMxfbc"
+                    },
+                    "S3Bucket": {
+                        "Ref": "LambdaFunctionRideStreamProcessorCodeS3BucketZDbA7"
+                    },
+                    "ZipFile": {
+                        "Ref": "LambdaFunctionRideStreamProcessorCodeZipFileSkcnX"
+                    },
+                    "ImageUri": {
+                        "Ref": "LambdaFunctionRideStreamProcessorCodeImageUriaWN4q"
+                    },
+                    "S3Key": {
+                        "Ref": "LambdaFunctionRideStreamProcessorCodeS3Key8TDQb"
+                    }
+                },
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IAMRoleRideStreamProcessorrolewc2c29w8",
+                        "Arn"
+                    ]
+                },
+                "FileSystemConfigs": [],
+                "FunctionName": "RideStreamProcessor",
+                "Runtime": "python3.13",
+                "PackageType": "Zip",
+                "LoggingConfig": {
+                    "LogFormat": "Text",
+                    "LogGroup": "/aws/lambda/RideStreamProcessor"
+                },
+                "RecursiveLoop": "Terminate",
+                "EphemeralStorage": {
+                    "Size": 512
+                },
+                "Architectures": [
+                    "x86_64"
+                ]
+            }
+        },
+        "LambdaEventSourceMapping": {
+            "UpdateReplacePolicy": "Retain",
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "StartingPosition": "LATEST",
+                "BatchSize": 100,
+                "MaximumRetryAttempts": -1,
+                "ParallelizationFactor": 1,
+                "Enabled": true,
+                "EventSourceArn": {
+                    "Fn::GetAtt": [
+                        "KinesisStreamMydatastream",
+                        "Arn"
+                    ]
+                },
+                "MetricsConfig": {
+                    "Metrics": []
+                },
+                "FunctionName": {
+                    "Fn::GetAtt": [
+                        "LambdaFunctionRideStreamProcessor",
+                        "Arn"
+                    ]
+                },
+                "TumblingWindowInSeconds": 0,
+                "BisectBatchOnFunctionError": false,
+                "MaximumRecordAgeInSeconds": -1,
+                "Tags": [],
+                "MaximumBatchingWindowInSeconds": 300
+            }
+        },
+        "IAMManagedPolicyPolicyserviceroleAWSLambdaBasicExecutionRoled6993dd9f6bc4cb68a1dde6335ab23e0": {
+            "UpdateReplacePolicy": "Retain",
+            "Type": "AWS::IAM::ManagedPolicy",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "ManagedPolicyName": "AWSLambdaBasicExecutionRole-d6993dd9-f6bc-4cb6-8a1d-de6335ab23e0",
+                "Path": "/service-role/",
+                "Description": "",
+                "Groups": [],
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Resource": "arn:aws:logs:us-west-1:390402566290:*",
+                            "Action": "logs:CreateLogGroup",
+                            "Effect": "Allow"
+                        },
+                        {
+                            "Resource": [
+                                "arn:aws:logs:us-west-1:390402566290:log-group:/aws/lambda/getRidesForecast:*"
+                            ],
+                            "Action": [
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents"
+                            ],
+                            "Effect": "Allow"
+                        }
+                    ]
+                },
+                "Roles": [
+                    "getRidesForecast-role-s9putrir"
+                ],
+                "Users": []
+            }
+        },
+        "IAMRoleRideStreamProcessorrolewc2c29w8": {
+            "UpdateReplacePolicy": "Retain",
+            "Type": "AWS::IAM::Role",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "Path": "/service-role/",
+                "ManagedPolicyArns": [
+                    {
+                        "Ref": "IAMManagedPolicyPolicyserviceroleAWSLambdaBasicExecutionRoleee329dd6c4a3418c8f2f1fbff784e5f2"
+                    },
+                    {
+                        "Ref": "IAMManagedPolicyPolicyAWSKinesisTest"
+                    }
+                ],
+                "MaxSessionDuration": 3600,
+                "RoleName": "RideStreamProcessor-role-wc2c29w8",
+                "Policies": [
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Resource": "arn:aws:ssm:us-west-1:390402566290:parameter/STREAM_SPEED_FACTOR",
+                                    "Action": "ssm:GetParameter",
+                                    "Effect": "Allow",
+                                    "Sid": "VisualEditor0"
+                                }
+                            ]
+                        },
+                        "PolicyName": "getSTREAM_SPEED_FACTORparam"
+                    }
+                ],
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Action": "sts:AssumeRole",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "LambdaFunctionGetRidesForecast": {
+            "UpdateReplacePolicy": "Retain",
+            "Type": "AWS::Lambda::Function",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "MemorySize": 128,
+                "Description": "",
+                "TracingConfig": {
+                    "Mode": "PassThrough"
+                },
+                "Timeout": 3,
+                "RuntimeManagementConfig": {
+                    "UpdateRuntimeOn": "Auto"
+                },
+                "Handler": "lambda_function.lambda_handler",
+                "Code": {
+                    "S3ObjectVersion": {
+                        "Ref": "LambdaFunctionGetRidesForecastCodeS3ObjectVersion7R7Fy"
+                    },
+                    "S3Bucket": {
+                        "Ref": "LambdaFunctionGetRidesForecastCodeS3BucketYro5h"
+                    },
+                    "ZipFile": {
+                        "Ref": "LambdaFunctionGetRidesForecastCodeZipFile7h0id"
+                    },
+                    "ImageUri": {
+                        "Ref": "LambdaFunctionGetRidesForecastCodeImageUriCrYvl"
+                    },
+                    "S3Key": {
+                        "Ref": "LambdaFunctionGetRidesForecastCodeS3KeymQt7E"
+                    }
+                },
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IAMRoleGetRidesForecastroles9putrir",
+                        "Arn"
+                    ]
+                },
+                "FileSystemConfigs": [],
+                "FunctionName": "getRidesForecast",
+                "Runtime": "python3.13",
+                "PackageType": "Zip",
+                "LoggingConfig": {
+                    "LogFormat": "Text",
+                    "LogGroup": "/aws/lambda/getRidesForecast"
+                },
+                "RecursiveLoop": "Terminate",
+                "EphemeralStorage": {
+                    "Size": 512
+                },
+                "Layers": [
+                    "arn:aws:lambda:us-west-1:336392948345:layer:AWSSDKPandas-Python313:3"
+                ],
+                "Architectures": [
+                    "x86_64"
+                ]
+            }
+        }
+    }
+}
