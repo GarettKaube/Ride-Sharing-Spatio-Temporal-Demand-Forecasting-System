@@ -1,8 +1,8 @@
-import duckdb
+
 import boto3
 
 
-def fetch_df_from_query(query, conn:duckdb.DuckDBPyConnection):
+def fetch_df_from_query(query, conn):
     return conn.execute(query).fetch_df()
 
 def get_param(name:str):

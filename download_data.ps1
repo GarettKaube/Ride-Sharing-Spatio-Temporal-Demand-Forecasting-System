@@ -1,4 +1,3 @@
-$limit = 50000
 $total_rows = 150000000
 $base_url = "https://data.cityofchicago.org/resource/m6dm-c72p.csv"
 $app_token = "<CHICAGO DATA API APP TOKEN>" 

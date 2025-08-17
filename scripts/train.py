@@ -268,7 +268,7 @@ def main():
     mlflow.set_tracking_uri(TRACKING_URI)
     mlflow.set_experiment("rides_forecasting")
 
-    df = pd.read_csv("data.csv", index_col=0)
+    df = pd.read_csv("./data/processed_data.csv", index_col=0)
 
     features, targets = make_features_array(df)
     features = np.array(features, dtype=float)
