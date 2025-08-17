@@ -31,12 +31,13 @@ class SpatialTemporalModel(nn.Module):
         super(SpatialTemporalModel, self).__init__()
         self.H = H
         self.kernel_size = kernel_size
+        
         self.STConv1 = STConv(
             num_nodes=n_nodes,
             in_channels=in_channels,
             hidden_channels=16,
             out_channels=64,
-            kernel_size=3,
+            kernel_size=self.kernel_size,
             K=1
         )
 
@@ -45,11 +46,13 @@ class SpatialTemporalModel(nn.Module):
             in_channels=64,
             hidden_channels=16,
             out_channels=64,
-            kernel_size=3,
+            kernel_size=self.kernel_size,
             K=1
         )
 
-        self.last_temporal = TemporalConv(in_channels=64, out_channels=64)
+        self.last_temporal = TemporalConv(
+            in_channels=64, out_channels=64, kernel_size=self.kernel_size
+        )
 
         linear_size = n_time_steps_input - 2 * (2 * (self.kernel_size - 1)) - self.kernel_size + 1
 
