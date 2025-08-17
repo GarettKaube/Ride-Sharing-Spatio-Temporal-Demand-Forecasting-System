@@ -1,3 +1,7 @@
+""" Python file containing the code for the Spatio-Temporal Graph Convolutional Networks
+architechture, a class for standardizing spatio-temporal tensors, and an MLflow PythonModel
+wrapper class for the full model.
+"""
 import torch
 from torch import nn
 from torch_geometric_temporal.nn.attention.stgcn import STConv
@@ -106,13 +110,13 @@ class GraphModel(mlflow.pyfunc.PythonModel):
         self.model.eval()
         self.standardizer = standardizer
 
-    def predict(self, context, model_input: list[dict[str, float]], params=None) -> list:
+    def predict(self, context, model_input: list[dict[str, list[float | list]]], params=None) -> list:
         """
         :param context:
-        :param model_input: dict formatted as {
-            'x': numpy array shaped (n_time_steps, n_nodes, n_features),
-            'edge_index': numpy array of edge indices,
-            'edge_attr': numpy array of edge weights
+        :param model_input: list[dict[str, float]] formatted as {
+            'x': nested lists shaped (n_time_steps, n_nodes, n_features),
+            'edge_index': list of edge indices,
+            'edge_attr': list array of edge weights
         }
         :param params:
         :return: np.ndarray

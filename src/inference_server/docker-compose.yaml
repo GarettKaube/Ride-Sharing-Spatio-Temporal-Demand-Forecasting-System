@@ -1,0 +1,8 @@
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:
+      - ./model_code:/app/model_code
