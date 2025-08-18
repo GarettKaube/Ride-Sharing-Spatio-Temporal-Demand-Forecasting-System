@@ -13,7 +13,11 @@ lambda_client = boto3.client("lambda", region_name=REGION)
 response = ssm.get_parameter(Name="STREAM_SPEED_FACTOR")
 STREAM_SPEED_FACTOR = int(response['Parameter']['Value'])
 
-N_TIME_STEPS = 16
+response = ssm.get_parameter(Name="N_LAGS")
+N_LAGS = int(response['Parameter']['Value'])
+# Number of time steps total including current and lagged values
+N_TIME_STEPS = N_LAGS + 1
+
 BUFFER_TTL = (3000 * N_TIME_STEPS) / STREAM_SPEED_FACTOR
 
 

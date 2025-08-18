@@ -188,6 +188,15 @@ class Trainer:
 
 
 def fill_absent_communities(X):
+    """
+    For a time stamp t we observe a matrix (n_nodes, n_features). If a community had no counts at time t, then
+    n_nodes will be less than expected so we just insert the node into the observation with default values.
+    Note: this process could probably be sped up by using pd.MultiIndex.from_product(
+        [communities, time_stamps], names=["pickup_community_area", "random_time_stamp"]
+    ) instead then a ffill after (this needs to be implemented)
+    :param X:
+    :return:
+    """
     weather_features = ['temp', 'dwpt', 'rhum', 'prcp', 'wdir', 'wspd', 'pres', 'coco']
     community_areas = set(range(1, 77 + 1))
 
