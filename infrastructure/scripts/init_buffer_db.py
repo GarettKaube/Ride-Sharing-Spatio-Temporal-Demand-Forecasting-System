@@ -4,6 +4,10 @@ Script for creating a dynamodb table called RideKinesisStreamBuffer to temporari
 import boto3
 from botocore.exceptions import ClientError
 import time
+import os
+
+ENV = os.environ.get("ENVIRONMENT", "DEV")
+AWS_REGION = os.environ.get("REGION")
 
 class RideKinesisBufferTable:
     def __init__(self, client, name):
@@ -48,9 +52,9 @@ class RideKinesisBufferTable:
 
 
 def main():
-    client = boto3.client("dynamodb", region_name="us-west-1")
+    client = boto3.client("dynamodb", region_name=AWS_REGION)
 
-    table = RideKinesisBufferTable(client, name="RideKinesisStreamBuffer")
+    table = RideKinesisBufferTable(client, name=f"RideKinesisStreamBuffer{ENV}")
     table.create_table()
     table.enable_ttl()
 

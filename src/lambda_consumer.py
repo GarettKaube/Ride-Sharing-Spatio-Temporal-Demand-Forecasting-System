@@ -4,6 +4,7 @@ import boto3
 from botocore.exceptions import ClientError
 from decimal import Decimal
 import time
+import os
 
 REGION = "us-west-1"
 
@@ -17,6 +18,8 @@ response = ssm.get_parameter(Name="N_LAGS")
 N_LAGS = int(response['Parameter']['Value'])
 # Number of time steps total including current and lagged values
 N_TIME_STEPS = N_LAGS + 1
+
+ENV = os.environ.get("ENVIRONMENT", "DEV")
 
 BUFFER_TTL = (3000 * N_TIME_STEPS) / STREAM_SPEED_FACTOR
 

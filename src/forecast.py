@@ -21,7 +21,7 @@ ssm = boto3.client("ssm", region_name=REGION)
 response = ssm.get_parameter(Name="N_LAGS")
 N_LAGS = int(response['Parameter']['Value'])
 
-ENV = os.environ.get("ENVIRONMENT")
+ENV = os.environ.get("ENVIRONMENT", "DEV")
 
 s3 = boto3.client("s3", region_name=REGION)
 DEST_BUCKET = os.environ.get("DEST_BUCKET")
@@ -319,7 +319,6 @@ def save_forecast_to_s3(forecast: list[list], date, bucket:str, env:str) -> None
         except ClientError as e:
             print(f"failed to put forecast to s3: {community_num}, {date_str}", e)
             raise
-
 
 
 def lambda_handler(event, context):
