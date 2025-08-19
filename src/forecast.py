@@ -321,19 +321,19 @@ def save_forecast_to_s3(forecast: list[float], date:str, bucket:str, env:str) ->
         .replace(" ", "_")\
         .replace(".", "_")
 
-    for community_num, prediction in forecast:
+    for community_num, prediction in enumerate(forecast):
         data = {
             "date": date,
             "community_num": community_num,
-            "forecast": Decimal(str(prediction)),
+            "forecast": prediction,
         }
 
-        json_data = json.dumps(data).format("UTF-8")
+        json_data = json.dumps(data)
         try:
             response = s3.put_object(
                 Body=json_data,
                 Bucket=bucket,
-                key=f"{env}/community_{community_num}_forecasts/{community_num}_{date_str}.json"
+                Key=f"{env}/community_{community_num}_forecasts/{community_num}_{date_str}.json"
             )
         except ClientError as e:
             print(f"failed to put forecast to s3: {community_num}, {date_str}", e)
@@ -377,6 +377,10 @@ def lambda_handler(event, context):
 
     agg = shift_aggregates(agg, N_LAGS + 1)
 
+    date = str(
+        agg.index.get_level_values(1).unique()[-1].replace(tzinfo=None)
+    )
+
     # Get and join weather data
     weather = load_weather_data()
     data_weather = join_weather_data(agg, weather)
@@ -394,7 +398,7 @@ def lambda_handler(event, context):
     # Output shaped (n_time_stamps, N_LAGS + 1, N_NODES, N_FEATURES)
     lagged_features = lag_features_np(features, N_LAGS)
 
-    date = str(data_weather.index[-1])
+
     forecast = get_forecast(
         X=lagged_features,
         date=date,

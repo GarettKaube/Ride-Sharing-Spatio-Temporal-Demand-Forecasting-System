@@ -121,7 +121,7 @@ def invoke_get_rides_forecast() -> bool:
     lambda_client.invoke(
         FunctionName="getRidesForecast",
         InvocationType="Event",
-        payload=json.dumps(dummy_payload)
+        Payload=json.dumps(dummy_payload)
     )
 
     return True
