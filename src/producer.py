@@ -35,7 +35,9 @@ SIMULATION_STRIDE = 100
 
 SIMULATION_START_INDEX = 150000
 
-kinesis_client = boto3.client("kinesis", region_name="us-west-1")
+AWS_REGION = os.environ.get("REGION")
+
+kinesis_client = boto3.client("kinesis", region_name=AWS_REGION)
 
 
 def generate_time_stamp_range(current_timestamp, periods:int) -> np.ndarray:

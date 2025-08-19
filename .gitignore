@@ -17,3 +17,5 @@ download.ps1
 /.vscode
 **/.idea
 /read_dynamodb_data.ipynb
+features.npy
+targets.npy

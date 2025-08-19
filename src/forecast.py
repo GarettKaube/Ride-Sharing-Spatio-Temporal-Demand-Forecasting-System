@@ -1,7 +1,10 @@
 import json
+import time
+
 import pandas as pd
 import numpy as np
 import boto3
+from botocore.exceptions import ClientError
 import io
 from pandas import IndexSlice as idx
 import requests
@@ -13,12 +16,28 @@ INFERENCE_SERVER_PORT = os.environ.get("INFERENCE_SERVER_PORT")
 SERVER_URL = f"http://{INFERENCE_SERVER_IP}:{INFERENCE_SERVER_PORT}" + "/invocations/"
 
 COMMUNITIES_TO_FORECAST = [8, 33, 32]
-N_LAGS = 15
+
+REGION = "us-west-1"
+
+ssm = boto3.client("ssm", region_name=REGION)
+response = ssm.get_parameter(Name="N_LAGS")
+N_LAGS = int(response['Parameter']['Value'])
+
+ENV = os.environ.get("ENVIRONMENT", "DEV")
+
+BUFFER_TABLE_NAME = f'RideKinesisStreamBuffer{ENV}'
+
+s3 = boto3.client("s3", region_name=REGION)
+DEST_BUCKET = os.environ.get("DEST_BUCKET")
+
+DEST_DYNAMO_DB_TABLE = f"RideForecast{ENV}"
+
+client = boto3.resource("dynamodb", region_name=REGION)
 
 
-def get_buffered_data():
+def get_buffered_data(table_name):
     client = boto3.resource("dynamodb", region_name="us-west-1")
-    table = client.Table('RideKinesisStreamBuffer')
+    table = client.Table(table_name)
 
     response = table.scan()
     items = response['Items']
@@ -84,7 +103,6 @@ def aggregate_data(df: pd.DataFrame):
 def load_weather_data(bucket='mybucket1654'):
     key = 'weather_features.csv'
 
-    s3 = boto3.client('s3')
     response = s3.get_object(Bucket=bucket, Key=key)
 
     body = response['Body'].read()
@@ -286,9 +304,59 @@ def get_forecast(X:list | np.ndarray, date, communities:list | None,
         return response.json()
 
 
+def save_forecast_to_s3(forecast: list[list], date, bucket:str, env:str) -> None:
+    date_str = str(date)\
+        .replace(":", "_")\
+        .replace(" ", "_")\
+        .replace(".", "_")
+
+    for community_num, prediction in forecast:
+        data = {
+            "date": str(date),
+            "community_num": community_num,
+            "forecast": prediction[0]
+        }
+
+        json_data = json.dumps(data).format("UTF-8")
+        try:
+            response = s3.put_object(
+                Body=json_data,
+                Bucket=bucket,
+                key=f"{env}/community_{community_num}_forecasts/{community_num}_{date_str}.json"
+            )
+        except ClientError as e:
+            print(f"failed to put forecast to s3: {community_num}, {date_str}", e)
+            raise
+
+
+def put_forecast_to_dynamodb(forecast: list[list], date, table_name:str, client):
+    in_db = False
+    table = client.Table(table_name)
+
+    arrival = time.time()
+
+    item = {
+        'community': str(trip_id),
+        'ttl': Decimal(str(arrival + 6000))
+    }
+
+    try:
+        table.put_item(
+            Item=item,
+            ConditionExpression='attribute_not_exists(id)'
+        )
+
+    except ClientError as e:
+        if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
+            print("Item already in db")
+            in_db = True
+        else:
+            raise
+    return in_db
+
 def lambda_handler(event, context):
 
-    items = get_buffered_data()
+    items = get_buffered_data(BUFFER_TABLE_NAME)
 
     data = format_data(items)
     agg = aggregate_data(data)\
@@ -313,12 +381,15 @@ def lambda_handler(event, context):
     # Output shaped (n_time_stamps, N_LAGS + 1, N_NODES, N_FEATURES)
     lagged_features = lag_features_np(features, N_LAGS)
 
+    date = str(data_weather.index[-1])
     forecast = get_forecast(
         X=lagged_features,
-        date=str(data_weather.index[-1]),
+        date=date,
         communities=COMMUNITIES_TO_FORECAST,
         server_url=SERVER_URL
     )
+
+    save_forecast_to_s3(forecast, date, DEST_BUCKET, ENV)
 
     return {
         'statusCode': 200,

@@ -3,6 +3,10 @@ Script for creating a dynamodb table called RideKinesisProcessor to track record
 """
 import boto3
 from botocore.exceptions import ClientError
+import os
+
+ENV = os.environ.get("ENVIRONMENT", "DEV")
+AWS_REGION = os.environ.get("REGION")
 
 class RideKinesisProcessorTable:
     def __init__(self, client, name):
@@ -43,11 +47,10 @@ class RideKinesisProcessorTable:
             }
         )
 
-
 def main():
-    client = boto3.client("dynamodb", region_name="us-west-1")
+    client = boto3.client("dynamodb", region_name=AWS_REGION)
 
-    table = RideKinesisProcessorTable(client, name="RideKinesisProcessor")
+    table = RideKinesisProcessorTable(client, name=f"RideKinesisProcessor{ENV}")
     table.create_table()
     table.enable_ttl()
 

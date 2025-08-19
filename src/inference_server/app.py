@@ -3,7 +3,7 @@ import logging
 from fastapi import FastAPI
 import torch
 import numpy as np
-from model_code.model_code import SpatialTemporalModel, TensorStandardizer
+from model_code import SpatialTemporalModel, TensorStandardizer
 from torch_geometric_temporal.signal import StaticGraphTemporalSignal
 
 logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s %(message)s", level=logging.INFO)

@@ -4,6 +4,7 @@ import boto3
 from botocore.exceptions import ClientError
 from decimal import Decimal
 import time
+import os
 
 REGION = "us-west-1"
 
@@ -13,17 +14,26 @@ lambda_client = boto3.client("lambda", region_name=REGION)
 response = ssm.get_parameter(Name="STREAM_SPEED_FACTOR")
 STREAM_SPEED_FACTOR = int(response['Parameter']['Value'])
 
-N_TIME_STEPS = 16
+response = ssm.get_parameter(Name="N_LAGS")
+N_LAGS = int(response['Parameter']['Value'])
+# Number of time steps total including current and lagged values
+N_TIME_STEPS = N_LAGS + 1
+
+ENV = os.environ.get("ENVIRONMENT", "DEV")
+
 BUFFER_TTL = (3000 * N_TIME_STEPS) / STREAM_SPEED_FACTOR
 
+BUFFER_TABLE_NAME = f"RideKinesisStreamBuffer{ENV}"
+PROCESSING_TABLE_NAME = f"RideKinesisProcessor{ENV}"
 
-def try_add_item_to_db(trip_id: str, arrival: float) -> bool:
+
+def try_add_item_to_db(trip_id: str, arrival: float, table_name:str) -> bool:
     """ Adds the event to a dynamodb to ensure we do not process the record
     again.
     """
     in_db = False
     client = boto3.resource("dynamodb", region_name=REGION)
-    table = client.Table("RideKinesisProcessor")
+    table = client.Table(table_name)
 
     item = {
         'id': str(trip_id),
@@ -45,18 +55,19 @@ def try_add_item_to_db(trip_id: str, arrival: float) -> bool:
     return in_db
 
 
-def add_data_to_buffer(data, arrival_time):
+def add_data_to_buffer(data, arrival_time, table_name:str):
     print("Adding data to buffer")
     print(f"ttl: {arrival_time + BUFFER_TTL}")
 
     client = boto3.resource("dynamodb", region_name=REGION)
-    table = client.Table("RideKinesisStreamBuffer")
+    table = client.Table(table_name)
 
     data = data.copy()
+
     try:
         id = data.pop('trip_id')
         table.put_item(
-            TableName="RideKinesisStreamBuffer",
+            TableName=table_name,
             Item={
                 "trip_id": str(id),
                 "random_time_stamp": Decimal(str(data.pop('random_time_stamp'))),
@@ -93,22 +104,11 @@ def add_data_to_buffer(data, arrival_time):
             }
         )
     except ClientError:
-        print(f"Failed to put item id: {id}")   
+        print(f"Failed to put item id: {id}")
 
-
-def get_buffered_data():
-    client = boto3.resource("dynamodb", region_name=REGION)
-    table = client.Table('RideKinesisStreamBuffer')
-
-    response = table.scan()
-    items = response['Items']
-
-    while 'LastEvaluatedKey' in response:
-        response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
-        items.extend(response['Items'])
-
-
-    return items
+    except KeyError:
+        print("data is missing key 'trip_id'.")
+        raise
 
 
 def invoke_get_rides_forecast() -> bool:
@@ -144,9 +144,9 @@ def lambda_handler(event, context):
         print(f"received trip_id: {trip_id}")
  
         # Enable idempotency
-        if not try_add_item_to_db(data['trip_id'], processing_time):
+        if not try_add_item_to_db(data['trip_id'], processing_time, PROCESSING_TABLE_NAME):
             # Add data to retention buffer
-            add_data_to_buffer(data, processing_time)
+            add_data_to_buffer(data, processing_time, BUFFER_TABLE_NAME)
 
 
     invoke_get_rides_forecast()
