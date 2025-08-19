@@ -1,14 +1,17 @@
 import json
 import time
-
+import datetime
 import pandas as pd
 import numpy as np
 import boto3
 from botocore.exceptions import ClientError
 import io
+
+from decimal import Decimal
 from pandas import IndexSlice as idx
 import requests
 import os
+
 
 INFERENCE_SERVER_IP = os.environ.get("INFERENCE_SERVER_IP")
 INFERENCE_SERVER_PORT = os.environ.get("INFERENCE_SERVER_PORT")
@@ -25,7 +28,7 @@ N_LAGS = int(response['Parameter']['Value'])
 
 ENV = os.environ.get("ENVIRONMENT", "DEV")
 
-<<<<<<< HEAD
+
 BUFFER_TABLE_NAME = f'RideKinesisStreamBuffer{ENV}'
 
 s3 = boto3.client("s3", region_name=REGION)
@@ -34,10 +37,6 @@ DEST_BUCKET = os.environ.get("DEST_BUCKET")
 DEST_DYNAMO_DB_TABLE = f"RideForecast{ENV}"
 
 client = boto3.resource("dynamodb", region_name=REGION)
-=======
-s3 = boto3.client("s3", region_name=REGION)
-DEST_BUCKET = os.environ.get("DEST_BUCKET")
->>>>>>> 284d8c71792839bf7802fa1d306149c4357b80a8
 
 
 def get_buffered_data(table_name):
@@ -295,21 +294,28 @@ def get_forecast(X:list | np.ndarray, date, communities:list | None,
     if isinstance(X, np.ndarray):
         X = X.tolist()
 
-    body = {
-        "date": date,
-        "X": X,
+    data = {
+        "x": X
     }
 
-    if communities:
-        body["communities"] = communities
+    payload = json.dumps({
+        "inputs": [data]
+    })
 
-    response = requests.post(url=server_url, json=body)
+    response = requests.post(
+        url=server_url,
+        data=payload,
+        headers={"Content-Type": "application/json"}
+    )
 
     if response.status_code == 200:
-        return response.json()
+        predictions = np.array(response.json()['predictions']).flatten()
+        if communities:
+            predictions = predictions[communities]
+        return predictions.tolist()
 
 
-def save_forecast_to_s3(forecast: list[list], date, bucket:str, env:str) -> None:
+def save_forecast_to_s3(forecast: list[float], date:str, bucket:str, env:str) -> None:
     date_str = str(date)\
         .replace(":", "_")\
         .replace(" ", "_")\
@@ -317,9 +323,9 @@ def save_forecast_to_s3(forecast: list[list], date, bucket:str, env:str) -> None
 
     for community_num, prediction in forecast:
         data = {
-            "date": str(date),
+            "date": date,
             "community_num": community_num,
-            "forecast": prediction[0]
+            "forecast": Decimal(str(prediction)),
         }
 
         json_data = json.dumps(data).format("UTF-8")
@@ -334,30 +340,32 @@ def save_forecast_to_s3(forecast: list[list], date, bucket:str, env:str) -> None
             raise
 
 
-def put_forecast_to_dynamodb(forecast: list[list], date, table_name:str, client):
-    in_db = False
+def put_forecast_to_dynamodb(forecast: list[float], date_timestamp:float, table_name:str, client):
     table = client.Table(table_name)
-
     arrival = time.time()
 
-    item = {
-        'community': str(trip_id),
-        'ttl': Decimal(str(arrival + 6000))
-    }
+    for community, prediction in enumerate(forecast):
+        item = {
+            'community': community,
+            'date': Decimal(str(date_timestamp)),
+            'ttl': Decimal(str(arrival + 6000)),
+            'forecast': Decimal(str(prediction)),
+            "id": str(community) + str(date_timestamp)
+        }
 
-    try:
-        table.put_item(
-            Item=item,
-            ConditionExpression='attribute_not_exists(id)'
-        )
+        try:
+            table.put_item(
+                Item=item,
+                ConditionExpression='attribute_not_exists(id)'
+            )
 
-    except ClientError as e:
-        if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
-            print("Item already in db")
-            in_db = True
-        else:
-            raise
-    return in_db
+        except ClientError as e:
+            if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
+                print("Item already in db")
+                in_db = True
+            else:
+                raise
+
 
 def lambda_handler(event, context):
 
@@ -395,6 +403,10 @@ def lambda_handler(event, context):
     )
 
     save_forecast_to_s3(forecast, date, DEST_BUCKET, ENV)
+
+    date_timestamp = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+    date_timestamp = time.mktime(date_timestamp.timetuple())
+    put_forecast_to_dynamodb(forecast, date_timestamp, DEST_DYNAMO_DB_TABLE, client)
 
     return {
         'statusCode': 200,

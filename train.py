@@ -43,7 +43,8 @@ def parse_args():
     argparsser = argparse.ArgumentParser()
     argparsser.add_argument("--batch_size", dest="batch_size", type=int)
     argparsser.add_argument("--n_epochs", dest="n_epochs", type=int, default=50)
-    argparsser.add_argument("--mode", dest="mode", type=str, default="train", choices=['train', 'test'])
+    argparsser.add_argument("--mode", dest="mode", type=str, default="train",
+                            choices=['train', 'test', 'log'])
     args = argparsser.parse_args()
     return args
 
