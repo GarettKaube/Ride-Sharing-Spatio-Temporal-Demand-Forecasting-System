@@ -25,6 +25,7 @@ N_LAGS = int(response['Parameter']['Value'])
 
 ENV = os.environ.get("ENVIRONMENT", "DEV")
 
+<<<<<<< HEAD
 BUFFER_TABLE_NAME = f'RideKinesisStreamBuffer{ENV}'
 
 s3 = boto3.client("s3", region_name=REGION)
@@ -33,6 +34,10 @@ DEST_BUCKET = os.environ.get("DEST_BUCKET")
 DEST_DYNAMO_DB_TABLE = f"RideForecast{ENV}"
 
 client = boto3.resource("dynamodb", region_name=REGION)
+=======
+s3 = boto3.client("s3", region_name=REGION)
+DEST_BUCKET = os.environ.get("DEST_BUCKET")
+>>>>>>> 284d8c71792839bf7802fa1d306149c4357b80a8
 
 
 def get_buffered_data(table_name):
