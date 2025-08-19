@@ -8,4 +8,4 @@ Feature transforms such as logging, differeencing, and cyclical transforms, were
 
 
 ## MLflow Inference Server
-run: `mlflow models serve -m runs:/<run_id>/model -p 5000`
+run: `mlflow models serve -m runs:/<run_id>/model -p 5000 --env-manager <env-manager>`
