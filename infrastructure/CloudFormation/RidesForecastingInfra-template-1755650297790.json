@@ -1,59 +1,67 @@
 {
     "Metadata": {
         "AWSToolsMetrics": {
-            "IaC_Generator": "arn:aws:cloudformation:us-west-1:390402566290:generatedTemplate/e5034cf1-1eac-4d25-bbdb-1efe5132f56b"
+            "IaC_Generator": "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:generatedTemplate/9dcf1eb8-c820-406e-bdcc-f5ffb18334cb"
         }
     },
     "Parameters": {
-        "LambdaFunctionRideStreamProcessorCodeZipFileSkcnX": {
-            "NoEcho": "true",
+        "InferenceServerIp": {
             "Type": "String",
-            "Description": "(Node.js and Python) The source code of your Lambda function. If you include your function source inline with this parameter, CFN places it in a file named ``index`` and zips it to create a [deployment package](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html). This zip file cannot exceed 4MB. For the ``Handler`` property, the first part of the handler identifier must be ``index``. For example, ``index.handler``.\n  When you specify source code inline for a Node.js function, the ``index`` file that CFN creates uses the extension ``.js``. This means that LAM treats the file as a CommonJS module. ES modules aren't supported for inline functions.\n   For JSON, you must escape quotes and special characters such as newline (``\\n``) with a backslash.\n If you specify a function that interacts with an AWS CloudFormation custom resource, you don't have to write your own functions to send responses to the custom resource that invoked the function. AWS CloudFormation provides a response module ([cfn-response](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-lambda-function-code-cfnresponsemodule.html)) that simplifies sending responses. See [Using Lambda with CloudFormation](https://docs.aws.amazon.com/lambda/latest/dg/services-cloudformation.html) for details."
+            "Description": "The IP for the inference server which getRidesForecast lambda acceses"
         },
-        "LambdaFunctionGetRidesForecastCodeImageUriCrYvl": {
-            "NoEcho": "true",
+        "InferenceServerPort": {
             "Type": "String",
-            "Description": "URI of a [container image](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html) in the Amazon ECR registry."
+            "Description": "The port for the inference server which getRidesForecast lambda acceses"
         },
-        "LambdaFunctionGetRidesForecastCodeZipFile7h0id": {
-            "NoEcho": "true",
-            "Type": "String",
-            "Description": "(Node.js and Python) The source code of your Lambda function. If you include your function source inline with this parameter, CFN places it in a file named ``index`` and zips it to create a [deployment package](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html). This zip file cannot exceed 4MB. For the ``Handler`` property, the first part of the handler identifier must be ``index``. For example, ``index.handler``.\n  When you specify source code inline for a Node.js function, the ``index`` file that CFN creates uses the extension ``.js``. This means that LAM treats the file as a CommonJS module. ES modules aren't supported for inline functions.\n   For JSON, you must escape quotes and special characters such as newline (``\\n``) with a backslash.\n If you specify a function that interacts with an AWS CloudFormation custom resource, you don't have to write your own functions to send responses to the custom resource that invoked the function. AWS CloudFormation provides a response module ([cfn-response](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-lambda-function-code-cfnresponsemodule.html)) that simplifies sending responses. See [Using Lambda with CloudFormation](https://docs.aws.amazon.com/lambda/latest/dg/services-cloudformation.html) for details."
-        },
-        "LambdaFunctionRideStreamProcessorCodeS3BucketZDbA7": {
-            "NoEcho": "true",
-            "Type": "String",
-            "Description": "An Amazon S3 bucket in the same AWS-Region as your function. The bucket can be in a different AWS-account."
-        },
-        "LambdaFunctionGetRidesForecastCodeS3KeymQt7E": {
+        "LambdaFunctionRideStreamProcessorCodeS3Keyn5Gry": {
             "NoEcho": "true",
             "Type": "String",
             "Description": "The Amazon S3 key of the deployment package."
         },
-        "LambdaFunctionRideStreamProcessorCodeImageUriaWN4q": {
+        "LambdaFunctionGetRidesForecastCodeImageUripwJ6N": {
             "NoEcho": "true",
             "Type": "String",
             "Description": "URI of a [container image](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html) in the Amazon ECR registry."
         },
-        "LambdaFunctionRideStreamProcessorCodeS3ObjectVersionMxfbc": {
+        "LambdaFunctionRideStreamProcessorCodeS3BucketSAo9y": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "An Amazon S3 bucket in the same AWS-AWS::Region as your function. The bucket can be in a different AWS-account."
+        },
+        "LambdaFunctionRideStreamProcessorCodeS3ObjectVersionht07L": {
             "NoEcho": "true",
             "Type": "String",
             "Description": "For versioned objects, the version of the deployment package object to use."
         },
-        "LambdaFunctionGetRidesForecastCodeS3ObjectVersion7R7Fy": {
+        "LambdaFunctionRideStreamProcessorCodeImageUrirqhbz": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "URI of a [container image](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html) in the Amazon ECR registry."
+        },
+        "LambdaFunctionGetRidesForecastCodeS3Bucketkb2pI": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "An Amazon S3 bucket in the same AWS-AWS::Region as your function. The bucket can be in a different AWS-account."
+        },
+        "LambdaFunctionGetRidesForecastCodeS3ObjectVersionhir10": {
             "NoEcho": "true",
             "Type": "String",
             "Description": "For versioned objects, the version of the deployment package object to use."
         },
-        "LambdaFunctionRideStreamProcessorCodeS3Key8TDQb": {
+        "LambdaFunctionGetRidesForecastCodeS3KeybaMhp": {
             "NoEcho": "true",
             "Type": "String",
             "Description": "The Amazon S3 key of the deployment package."
         },
-        "LambdaFunctionGetRidesForecastCodeS3BucketYro5h": {
+        "LambdaFunctionRideStreamProcessorCodeZipFilei4Rky": {
             "NoEcho": "true",
             "Type": "String",
-            "Description": "An Amazon S3 bucket in the same AWS-Region as your function. The bucket can be in a different AWS-account."
+            "Description": "(Node.js and Python) The source code of your Lambda function. If you include your function source inline with this parameter, CFN places it in a file named ``index`` and zips it to create a [deployment package](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html). This zip file cannot exceed 4MB. For the ``Handler`` property, the first part of the handler identifier must be ``index``. For example, ``index.handler``.\n  When you specify source code inline for a Node.js function, the ``index`` file that CFN creates uses the extension ``.js``. This means that LAM treats the file as a CommonJS module. ES modules aren't supported for inline functions.\n   For JSON, you must escape quotes and special characters such as newline (``\\n``) with a backslash.\n If you specify a function that interacts with an AWS CloudFormation custom resource, you don't have to write your own functions to send responses to the custom resource that invoked the function. AWS CloudFormation provides a response module ([cfn-response](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-lambda-function-code-cfnresponsemodule.html)) that simplifies sending responses. See [Using Lambda with CloudFormation](https://docs.aws.amazon.com/lambda/latest/dg/services-cloudformation.html) for details."
+        },
+        "LambdaFunctionGetRidesForecastCodeZipFilesRiPF": {
+            "NoEcho": "true",
+            "Type": "String",
+            "Description": "(Node.js and Python) The source code of your Lambda function. If you include your function source inline with this parameter, CFN places it in a file named ``index`` and zips it to create a [deployment package](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html). This zip file cannot exceed 4MB. For the ``Handler`` property, the first part of the handler identifier must be ``index``. For example, ``index.handler``.\n  When you specify source code inline for a Node.js function, the ``index`` file that CFN creates uses the extension ``.js``. This means that LAM treats the file as a CommonJS module. ES modules aren't supported for inline functions.\n   For JSON, you must escape quotes and special characters such as newline (``\\n``) with a backslash.\n If you specify a function that interacts with an AWS CloudFormation custom resource, you don't have to write your own functions to send responses to the custom resource that invoked the function. AWS CloudFormation provides a response module ([cfn-response](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-lambda-function-code-cfnresponsemodule.html)) that simplifies sending responses. See [Using Lambda with CloudFormation](https://docs.aws.amazon.com/lambda/latest/dg/services-cloudformation.html) for details."
         }
     },
     "Resources": {
@@ -95,6 +103,9 @@
             "Properties": {
                 "Path": "/service-role/",
                 "ManagedPolicyArns": [
+                    {
+                        "Ref": "IAMManagedPolicyPolicyAWSKinesisTest"
+                    },
                     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
                     {
                         "Ref": "IAMManagedPolicyPolicyserviceroleAWSLambdaBasicExecutionRoled6993dd9f6bc4cb68a1dde6335ab23e0"
@@ -102,6 +113,22 @@
                 ],
                 "MaxSessionDuration": 3600,
                 "RoleName": "getRidesForecast-role-s9putrir",
+                "Policies": [
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Resource": "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/*",
+                                    "Action": "ssm:GetParameter",
+                                    "Effect": "Allow",
+                                    "Sid": "VisualEditor0"
+                                }
+                            ]
+                        },
+                        "PolicyName": "getSystemManagerParams"
+                    }
+                ],
                 "AssumeRolePolicyDocument": {
                     "Version": "2012-10-17",
                     "Statement": [
@@ -156,10 +183,13 @@
                         },
                         {
                             "Resource": [
-                                "arn:aws:kinesis:us-west-1:390402566290:stream/mydatastream",
-                                "arn:aws:dynamodb:us-west-1:390402566290:table/mytable",
-                                "arn:aws:dynamodb:us-west-1:390402566290:table/RideKinesisStreamBuffer",
-                                "arn:aws:dynamodb:us-west-1:390402566290:table/RideKinesisProcessor"
+                                "arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/mydatastream",
+                                "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/mytable",
+                                "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/RideKinesisStreamBufferDEV",
+                                "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/RideKinesisStreamBufferPROD",
+                                "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/RideKinesisProcessorDEV",
+                                "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/RideKinesisProcessorPROD",
+                                "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/RideForecastDEV"
                             ],
                             "Action": [
                                 "dynamodb:CreateTable",
@@ -181,6 +211,7 @@
                     ]
                 },
                 "Roles": [
+                    "getRidesForecast-role-s9putrir",
                     "RideStreamProcessor-role-wc2c29w8"
                 ],
                 "Users": [
@@ -202,13 +233,13 @@
                     "Version": "2012-10-17",
                     "Statement": [
                         {
-                            "Resource": "arn:aws:logs:us-west-1:390402566290:*",
+                            "Resource": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*",
                             "Action": "logs:CreateLogGroup",
                             "Effect": "Allow"
                         },
                         {
                             "Resource": [
-                                "arn:aws:logs:us-west-1:390402566290:log-group:/aws/lambda/RideStreamProcessor:*"
+                                "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/RideStreamProcessor:*"
                             ],
                             "Action": [
                                 "logs:CreateLogStream",
@@ -230,12 +261,12 @@
             "DeletionPolicy": "Delete",
             "Properties": {
                 "StreamModeDetails": {
-                    "StreamMode": "PROVISIONED"
+                    "StreamMode": "ON_DEMAND"
                 },
                 "RetentionPeriodHours": 24,
                 "DesiredShardLevelMetrics": [],
                 "Name": "mydatastream",
-                "ShardCount": 1
+                "ShardCount": 4
             }
         },
         "LambdaFunctionRideStreamProcessor": {
@@ -255,19 +286,19 @@
                 "Handler": "lambda_function.lambda_handler",
                 "Code": {
                     "S3ObjectVersion": {
-                        "Ref": "LambdaFunctionRideStreamProcessorCodeS3ObjectVersionMxfbc"
+                        "Ref": "LambdaFunctionRideStreamProcessorCodeS3ObjectVersionht07L"
                     },
                     "S3Bucket": {
-                        "Ref": "LambdaFunctionRideStreamProcessorCodeS3BucketZDbA7"
+                        "Ref": "LambdaFunctionRideStreamProcessorCodeS3BucketSAo9y"
                     },
                     "ZipFile": {
-                        "Ref": "LambdaFunctionRideStreamProcessorCodeZipFileSkcnX"
+                        "Ref": "LambdaFunctionRideStreamProcessorCodeZipFilei4Rky"
                     },
                     "ImageUri": {
-                        "Ref": "LambdaFunctionRideStreamProcessorCodeImageUriaWN4q"
+                        "Ref": "LambdaFunctionRideStreamProcessorCodeImageUrirqhbz"
                     },
                     "S3Key": {
-                        "Ref": "LambdaFunctionRideStreamProcessorCodeS3Key8TDQb"
+                        "Ref": "LambdaFunctionRideStreamProcessorCodeS3Keyn5Gry"
                     }
                 },
                 "Role": {
@@ -285,6 +316,11 @@
                     "LogGroup": "/aws/lambda/RideStreamProcessor"
                 },
                 "RecursiveLoop": "Terminate",
+                "Environment": {
+                    "Variables": {
+                        "ENV": "DEV"
+                    }
+                },
                 "EphemeralStorage": {
                     "Size": 512
                 },
@@ -322,7 +358,38 @@
                 "BisectBatchOnFunctionError": false,
                 "MaximumRecordAgeInSeconds": -1,
                 "Tags": [],
-                "MaximumBatchingWindowInSeconds": 300
+                "MaximumBatchingWindowInSeconds": 30
+            }
+        },
+        "S3BucketForecastedrides": {
+            "UpdateReplacePolicy": "Retain",
+            "Type": "AWS::S3::Bucket",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "PublicAccessBlockConfiguration": {
+                    "RestrictPublicBuckets": true,
+                    "IgnorePublicAcls": true,
+                    "BlockPublicPolicy": true,
+                    "BlockPublicAcls": true
+                },
+                "BucketName": "forecastedrides",
+                "OwnershipControls": {
+                    "Rules": [
+                        {
+                            "ObjectOwnership": "BucketOwnerEnforced"
+                        }
+                    ]
+                },
+                "BucketEncryption": {
+                    "ServerSideEncryptionConfiguration": [
+                        {
+                            "BucketKeyEnabled": true,
+                            "ServerSideEncryptionByDefault": {
+                                "SSEAlgorithm": "AES256"
+                            }
+                        }
+                    ]
+                }
             }
         },
         "IAMManagedPolicyPolicyserviceroleAWSLambdaBasicExecutionRoled6993dd9f6bc4cb68a1dde6335ab23e0": {
@@ -338,13 +405,13 @@
                     "Version": "2012-10-17",
                     "Statement": [
                         {
-                            "Resource": "arn:aws:logs:us-west-1:390402566290:*",
+                            "Resource": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*",
                             "Action": "logs:CreateLogGroup",
                             "Effect": "Allow"
                         },
                         {
                             "Resource": [
-                                "arn:aws:logs:us-west-1:390402566290:log-group:/aws/lambda/getRidesForecast:*"
+                                "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getRidesForecast:*"
                             ],
                             "Action": [
                                 "logs:CreateLogStream",
@@ -382,7 +449,20 @@
                             "Version": "2012-10-17",
                             "Statement": [
                                 {
-                                    "Resource": "arn:aws:ssm:us-west-1:390402566290:parameter/STREAM_SPEED_FACTOR",
+                                    "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:getRidesForecast",
+                                    "Action": "lambda:InvokeFunction",
+                                    "Effect": "Allow"
+                                }
+                            ]
+                        },
+                        "PolicyName": "AllowInvokegetRidesForecast"
+                    },
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Resource": "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/*",
                                     "Action": "ssm:GetParameter",
                                     "Effect": "Allow",
                                     "Sid": "VisualEditor0"
@@ -416,26 +496,26 @@
                 "TracingConfig": {
                     "Mode": "PassThrough"
                 },
-                "Timeout": 3,
+                "Timeout": 60,
                 "RuntimeManagementConfig": {
                     "UpdateRuntimeOn": "Auto"
                 },
                 "Handler": "lambda_function.lambda_handler",
                 "Code": {
                     "S3ObjectVersion": {
-                        "Ref": "LambdaFunctionGetRidesForecastCodeS3ObjectVersion7R7Fy"
+                        "Ref": "LambdaFunctionGetRidesForecastCodeS3ObjectVersionhir10"
                     },
                     "S3Bucket": {
-                        "Ref": "LambdaFunctionGetRidesForecastCodeS3BucketYro5h"
+                        "Ref": "LambdaFunctionGetRidesForecastCodeS3Bucketkb2pI"
                     },
                     "ZipFile": {
-                        "Ref": "LambdaFunctionGetRidesForecastCodeZipFile7h0id"
+                        "Ref": "LambdaFunctionGetRidesForecastCodeZipFilesRiPF"
                     },
                     "ImageUri": {
-                        "Ref": "LambdaFunctionGetRidesForecastCodeImageUriCrYvl"
+                        "Ref": "LambdaFunctionGetRidesForecastCodeImageUripwJ6N"
                     },
                     "S3Key": {
-                        "Ref": "LambdaFunctionGetRidesForecastCodeS3KeymQt7E"
+                        "Ref": "LambdaFunctionGetRidesForecastCodeS3KeybaMhp"
                     }
                 },
                 "Role": {
@@ -453,11 +533,18 @@
                     "LogGroup": "/aws/lambda/getRidesForecast"
                 },
                 "RecursiveLoop": "Terminate",
+                "Environment": {
+                    "Variables": {
+                        "DEST_BUCKET": "forecastedrides",
+                        "INFERENCE_SERVER_IP": "${InferenceServerIp}",
+                        "INFERENCE_SERVER_PORT": "${InferenceServerPort}"
+                    }
+                },
                 "EphemeralStorage": {
                     "Size": 512
                 },
                 "Layers": [
-                    "arn:aws:lambda:us-west-1:336392948345:layer:AWSSDKPandas-Python313:3"
+                    "arn:aws:lambda:${AWS::Region}:336392948345:layer:AWSSDKPandas-Python313:3"
                 ],
                 "Architectures": [
                     "x86_64"
