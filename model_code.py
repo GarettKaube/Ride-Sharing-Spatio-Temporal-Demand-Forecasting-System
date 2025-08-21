@@ -127,7 +127,7 @@ class GraphModel(mlflow.pyfunc.PythonModel):
     def predict(self, context, model_input: List[GraphInput], params=None) -> list[list[Any]]:
         """
         :param context:
-        :param model_input: list[dict[str, float]] formatted as {
+        :param model_input: list[dict[str, list[list[list[float]]]]] formatted as {
             'x': nested lists shaped (n_time_steps, n_nodes, n_features),
         }
         :param params:
