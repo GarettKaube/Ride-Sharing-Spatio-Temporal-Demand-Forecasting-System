@@ -125,7 +125,7 @@ def join_weather_data(df:pd.DataFrame, weather:pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def encode_periodic_features(df:pd.DataFrame):
+def encode_periodic_features(df: pd.DataFrame):
     def cyclical_transform(x, period):
         return np.sin(2 * np.pi * x / period), np.cos(2 * np.pi * x / period)
 
@@ -202,7 +202,7 @@ def fill_absent_communities(X):
     return X
 
 
-def make_features_array(df:pd.DataFrame) -> list:
+def make_features_array(df: pd.DataFrame) -> list:
     groups = ['interval']
     graph_ts = df.groupby(groups)[df.columns.drop(groups)]
     features = []
@@ -273,7 +273,7 @@ def handle_not_enough_observations(features: np.ndarray[float], n_lags: int) -> 
     return features
 
 
-def shift_aggregates(df:pd.DataFrame, length:int) -> pd.DataFrame:
+def shift_aggregates(df: pd.DataFrame, length: int) -> pd.DataFrame:
     """
     Ensures each community has at most length number of timestamps by removing the most historical
     timestamp for each community
@@ -288,7 +288,7 @@ def shift_aggregates(df:pd.DataFrame, length:int) -> pd.DataFrame:
     return  df
 
 
-def get_forecast(X:list | np.ndarray, date, communities:list | None, 
+def get_forecast(X: list | np.ndarray, date, communities: list | None,
                  server_url:str):
     
     if isinstance(X, np.ndarray):
