@@ -9,7 +9,7 @@ import boto3
 import pandas as pd
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
-from logging_config import setup_logging
+from src.logging_config import setup_logging
 import datetime
 import json
 from pandas import IndexSlice as idx
@@ -22,7 +22,7 @@ load_dotenv()
 
 date_time = datetime.datetime.now()
 date_time = date_time.strftime("%m-%d-%Y_%H-%M-%S")
-setup_logging(log_file_path=f'./logs/log_{date_time}.log')
+setup_logging(log_file_path=f'./logs/producer/log_{date_time}.log')
 
 logger = logging.getLogger("producer")
 
