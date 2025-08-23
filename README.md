@@ -3,6 +3,20 @@ ML system using spatio-temporal patterns to forecast Uber/Lyft ride demand for C
 Apache Spark was initially used for initial exploration on Databricks community edition while majority of exploration was done locally using duckdb. This data was aggregated to 30 minute intervals so that we can forecast ride demand for the next 30 minutes. Additional weather data was also gathered, but it was only on the hourly interval. Due to the hourly interval, the weather data had to be lagged carefully to avoid data leakage when joining with the rides data. Models were tested using statsmodels Poisson regression, sktime autoarmima, Meta/Facebook Prophet, spreg fixed effects spatial lag model, and PyTorch Geometric Temporal. A Spatio-Temporal Graph Convolutional Network model architecture was chosen due to significantly lower  mean squared error on the validation set.
 Feature transforms such as logging, differeencing, and cyclical transforms, were tested to try to improve performance. The models and performance were tracked using MLflow, with the final PyTorch Geometric Temporal model being wrapped in an MLflow PythonModel for easy model serving. With the model, the rest of the system design was layed out on AWS:
 
+## Data processing
+Using duckdb, additional datetime features were generated such as pickup hour, pickup month, pickup day of week, etc.
+The data is then aggregated into 30 minute bins by goruping by pick_up_community_area, and 30 minute time buckets. This was done using duckdb and SQL. 
+The variable of interest that we are modelling is the number of trip_ids observed in the 30 minute interval. This variable is named 'num_rides'. We want to predict the num_rides in the next 30 minutes so we shift num_rides upward with pd.Series.shift(-1) and call the new variable 'target'. Before joining with the weather data, we make sure the 'time' columns is an numpy datetime64[ns] column. Since the ride data is on a 30 minute interval and the weather data on hourly, we must be cautious about joining these datasets due to data leakage. E.g. Say we leave the data as is. If we have are forecasting the next 30 minutes of rides, we will be using the entire hours weather info but we have not observed the entire hour yet at the time of prediction, spawning data leakage. To address this, the weather data is simply lagged backwards. The rides data is left joined on weather. This created some NANs due to different time intervals so they were forward filled. Next we preserve the cyclical nature of hour of the day and day of the week by using sin and cos functions to encode the the cycles. log(x+1) transforms were applied to average_fare and average_trip_total since their underlying distributions looked log-normal or gamma distributed. Some differencing/seasonal differencing was employed to non-stationary features to see if performance would improve. With the final transformations, the data is split into train-validation-test for modelling.
+
+## Feature Selection
+SHAP with a XGBoost regressor explainer was used to generate SHAP values. Studying the SHAP values for a random selection of communities showed that num_rides, trip_start_hour_cos, trip_start_hour_sin, average_fare, average_trip_total, trip_start_day_of_week_cos, trip_start_day_of_week_sin, temp, dwpt, pres were the top 10 features.
+<img width="690" height="544" alt="shap" src="https://github.com/user-attachments/assets/8c811e96-7607-48ad-825e-56c16c73a470" />
+
+## Modelling,
+ Single variate models were first trained on each community areas while not expoiting spatial information to get a baseline.
+ These models were Prophet, Possion regression, and ARIMA. Since developing each model for each individual community area would be time consuming, 
+
+
 ## System Architecture 
 <img src="images/systemarchitechure.png" width="800"/>
 
