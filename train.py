@@ -118,7 +118,7 @@ class Trainer:
             self.mse_val.append(val_loss[1])
             self.poisson_loss_val.append(val_loss[0])
 
-    def _step(self, epoch:int, mode: Literal['train', 'validation'] = 'train') -> None:
+    def _step(self, epoch:int, mode: Literal['train', 'validation'] = 'train') -> tuple:
         cost = 0
         mse_total = 0
 
@@ -168,7 +168,7 @@ class Trainer:
             if mode == "validation" and mse_total < self.best_val_loss:
                 print("Saving current best model")
                 torch.save(self.model.state_dict(), self.saved_model_path)
-                self.best_val_loss = mse_total
+                self.best_val_loss = mse_total / (timestamp + 1)
                 self.best_val_epoch = epoch
 
             if mode == "validation" and ((epoch + 1) % self.check_point_interval == 0):
@@ -181,6 +181,8 @@ class Trainer:
                 )
 
         cost = cost / (timestamp + 1)
+        mlflow.log_metric(f"mse_{mode}", mse_total / (timestamp + 1), step=epoch)
+        mlflow.log_metric(f"poisson_loss_{mode}", cost, step=epoch)
         print(f"NNL {mode}: {cost}")
         print(f"MSE {mode}: {mse_total / (timestamp + 1)}")
 
