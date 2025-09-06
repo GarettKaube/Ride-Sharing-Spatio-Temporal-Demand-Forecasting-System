@@ -362,7 +362,6 @@ def put_forecast_to_dynamodb(forecast: list[float], date_timestamp:float, table_
         except ClientError as e:
             if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
                 print("Item already in db")
-                in_db = True
             else:
                 raise
 
