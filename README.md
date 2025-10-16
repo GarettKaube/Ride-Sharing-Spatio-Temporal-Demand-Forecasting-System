@@ -59,7 +59,7 @@ SHAP with a XGBoost regressor explainer was used to generate SHAP values. Studyi
 All models were assesed with mean-squared error on the validation set. STGCN was by far the most performant with a MSE of 725.78 while Prophet was the second most performant with MSE of 881.78. The others were well above 3000 MSE. At testing time, the STGCN had an MSE of 1378.72.
 ## System Architecture 
 <img src="images/systemarchitechure.png" width="800"/>
-
+Requests are first streamed to Kinesis, then every few seconds, the AWS lambda stream processor processes the requests and adds them to a DynamoDB database which acts as a buffer to store requests from the pas 16 hours so that we can perform aggregations. Next, the Lambda forecaster will trigger and perform aggregations and feature engineering and sends a POST request to the inference server and stores the results in S3 (for storing historic forecasts) and a DynamoDB database (for storing forecasts that are needed at the moment) for consumption.  
 
 ## MLflow Inference Server
 run: `mlflow models serve -m runs:/<run_id>/model -p 5000 --env-manager <env-manager>`
